@@ -22,9 +22,31 @@ public class CModelos {
         return mngr.buscar_clientes(consulta);
     }
     
+    public ArrayList<String[]> busca_venta() throws SQLException{
+        consulta = "SELECT detalleventa.idVenta, CONCAT(cliente.nombre, ' ', cliente.ap_paterno, ' ', cliente.ap_materno) AS nombre_completo, \n" +
+                   "producto.nombre, detalleventa.cantidad, detalleventa.precio_unitario, detalleventa.subtotal, venta.total\n" +
+                   "FROM detalleventa\n" +
+                   "JOIN venta ON detalleventa.idVenta = venta.idVenta\n" +
+                   "JOIN cliente ON venta.idCliente = cliente.idCliente\n" +
+                   "JOIN producto ON detalleventa.idProducto = producto.idProducto;";
+        return mngr.buscarVentas(consulta);
+    }
+    
     public boolean inserta_cliente(int clave, String ap_materno, String ap_paterno, String nombre, String contacto, String email) throws SQLException{
         consulta = "INSERT INTO panaderia.cliente (idCliente, ap_paterno, ap_materno, nombre, contacto, correo_electronico, idTipoCliente) " + 
                    "VALUES (" + clave + ",'" + ap_paterno + "','" + ap_materno + "','" + nombre + "','" + contacto + "','" + email + "',2);";
+        return mngr.insertar_objeto(consulta);
+    }
+    
+    public boolean inserta_venta(int idCliente, int cantidad, float descuento, float subtotal, float total) throws SQLException {
+        consulta = "INSERT INTO panaderia.venta (idVenta, idCliente, cantidad, descuento, subtotal, total) " +
+                   "VALUES (null," + idCliente + "," + cantidad + "," + descuento + "," + subtotal + "," + total + ");";
+        return mngr.insertar_objeto(consulta);
+    }
+    
+    public boolean inserta_detalleVenta(int idVenta, int idProducto, int cantidad, float precio, float subtotal) throws SQLException {
+        consulta = "INSERT INTO panaderia.detalleVenta (idDetalleVenta, idVenta, idProducto, cantidad, precio_unitario, subtotal) " +
+                   "VALUES (null," + idVenta + "," + idProducto + "," + cantidad + "," + precio + "," + subtotal + ");";
         return mngr.insertar_objeto(consulta);
     }
     
