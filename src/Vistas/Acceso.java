@@ -124,7 +124,7 @@ public class Acceso extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(239, Short.MAX_VALUE)
+                .addContainerGap(206, Short.MAX_VALUE)
                 .addComponent(jLabel5)
                 .addGap(222, 222, 222))
         );
@@ -136,7 +136,6 @@ public class Acceso extends javax.swing.JFrame {
                 .addGap(14, 14, 14))
         );
 
-        jLogo.setIcon(new javax.swing.ImageIcon("E:\\6ISC11\\Ingeniería de Software\\3er Parcial\\Logo_Los_Rogers.jpg")); // NOI18N
         jLogo.setMaximumSize(new java.awt.Dimension(128, 128));
         jLogo.setMinimumSize(new java.awt.Dimension(128, 128));
 
