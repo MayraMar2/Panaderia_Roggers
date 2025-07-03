@@ -90,7 +90,7 @@ public class ClientesFrecuentes extends javax.swing.JFrame {
                     if (modelos.inserta_cliente(clave, ap_materno, ap_paterno, nombre, contacto, email)) {
                         CUtilitarios.msg("Insercion correcta", "Inserta datos Modelo");
                     } else {
-                        CUtilitarios.msg_adver("Probelmas al insertar datos", "Insertar datos Modelo");
+                        CUtilitarios.msg_adver("Problemas al insertar datos", "Insertar datos Modelo");
                     }
                 }
                 limpiar_campos();

@@ -9,6 +9,7 @@ import Modelos.CModelosProductos;
 import Utilitarios.CUtilitarios;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -93,7 +94,7 @@ public class GestionProductos extends javax.swing.JFrame {
 
     }
 
-   /*
+    /*
 
     private void inserta_datos_gestion() {
         int id1;
@@ -126,8 +127,7 @@ public class GestionProductos extends javax.swing.JFrame {
         }
     }
     
-    */
-
+     */
     /////////////////////////////////////7
         
         
@@ -140,7 +140,7 @@ public class GestionProductos extends javax.swing.JFrame {
         try {
             String nombre = jTFNombre.getText();
             float precio = Float.parseFloat(jTFPrecio.getText());
-            int tipo = jCBTipos.getSelectedIndex()+1;
+            int tipo = Integer.parseInt(jTFIDTipo.getText());
             int cantidad = Integer.parseInt(jTFCantidad.getText());
             String elaboracion = jTFElaboracion.getText();
             String caducidad = jTFCaducidad.getText();
@@ -163,44 +163,42 @@ public class GestionProductos extends javax.swing.JFrame {
     ////////////////////////////////// ACTUALIZA
        
       private void actualiza_datos_Producto() {
-    int id;
-    DefaultTableModel modelTabla = (DefaultTableModel) jTProducto.getModel();
+        int id;
+        DefaultTableModel modelTabla = (DefaultTableModel) jTProducto.getModel();
 
-    if (campos_vacios()) {
-        CUtilitarios.msg_adver("Campos vacíos", "Actualizar datos");
-        return;
-    }
-
-    try {
-        // Obtener el ID desde la tabla
-        id = Integer.parseInt((String) modelTabla.getValueAt(jTProducto.getSelectedRow(), 0));
-
-        // Obtener valores de los campos
-        String nombre = jTFNombre.getText();
-        float precio = Float.parseFloat(jTFPrecio.getText());
-        int tipo = jCBTipos.getSelectedIndex() + 1;
-        int cantidad = Integer.parseInt(jTFCantidad.getText());
-        String elaboracion = jTFElaboracion.getText();
-        String caducidad = jTFCaducidad.getText();
-
-        // Llamar al modelo
-        boolean actualizado = modelos.actualiza_producto_y_gestion(id, nombre, precio, tipo, cantidad, elaboracion, caducidad);
-
-        if (actualizado) {
-            CUtilitarios.msg("Datos actualizados correctamente", "Éxito");
-            lee_datos();
-        } else {
-            CUtilitarios.msg_adver("Error al actualizar datos", "Error");
+        if (campos_vacios()) {
+            CUtilitarios.msg_adver("Campos vacíos", "Actualizar datos");
+            return;
         }
 
-    } catch (Exception e) {
-        CUtilitarios.msg_error("Error:\n" + e.getMessage(), "Error al actualizar");
+        try {
+            // Obtener el ID desde la tabla
+            id = Integer.parseInt((String) modelTabla.getValueAt(jTProducto.getSelectedRow(), 0));
+
+            // Obtener valores de los campos
+            String nombre = jTFNombre.getText();
+            float precio = Float.parseFloat(jTFPrecio.getText());
+            int tipo = Integer.parseInt(jTFIDTipo.getText());
+            int cantidad = Integer.parseInt(jTFCantidad.getText());
+            String elaboracion = jTFElaboracion.getText();
+            String caducidad = jTFCaducidad.getText();
+
+            // Llamar al modelo
+            boolean actualizado = modelos.actualiza_producto_y_gestion(id, nombre, precio, tipo, cantidad, elaboracion, caducidad);
+
+            if (actualizado) {
+                CUtilitarios.msg("Datos actualizados correctamente", "Éxito");
+                lee_datos();
+            } else {
+                CUtilitarios.msg_adver("Error al actualizar datos", "Error");
+            }
+
+        } catch (Exception e) {
+            CUtilitarios.msg_error("Error:\n" + e.getMessage(), "Error al actualizar");
+        }
+
+        limpiar_campos();
     }
-
-    limpiar_campos();
-}
-
-
 
     ////////////////////////
         
@@ -263,7 +261,7 @@ public class GestionProductos extends javax.swing.JFrame {
         limpiar_campos();
     }*/
 
-   /* private void elimina_dato() {
+ /* private void elimina_dato() {
         int idEliminar;
         //obtener el modelo de la tabla
         DefaultTableModel modelTabla
@@ -287,41 +285,34 @@ public class GestionProductos extends javax.swing.JFrame {
         }
         limpiar_campos();
     }*/
-    
-    
-    
-    
     private void elimina_dato() {
-    int idEliminar;
-    DefaultTableModel modelTabla = (DefaultTableModel) jTProducto.getModel();
+        int idEliminar;
+        DefaultTableModel modelTabla = (DefaultTableModel) jTProducto.getModel();
 
-    if (modelTabla.getRowCount() != 0) {
-        if (jTProducto.getSelectedRow() != -1) {
-            idEliminar = Integer.parseInt((String) modelTabla.getValueAt(jTProducto.getSelectedRow(), 0));
-            System.out.println("ID a eliminar: " + idEliminar); // Debug
+        if (modelTabla.getRowCount() != 0) {
+            if (jTProducto.getSelectedRow() != -1) {
+                idEliminar = Integer.parseInt((String) modelTabla.getValueAt(jTProducto.getSelectedRow(), 0));
+                System.out.println("ID a eliminar: " + idEliminar); // Debug
 
-            try {
-                if (modelos.elimina_producto(idEliminar)) {
-                    CUtilitarios.msg("Eliminación correcta", "Eliminar datos");
-                    lee_datos();
-                } else {
-                    CUtilitarios.msg_adver("No se pudo eliminar el producto", "Eliminar");
+                try {
+                    if (modelos.elimina_producto(idEliminar)) {
+                        CUtilitarios.msg("Eliminación correcta", "Eliminar datos");
+                        lee_datos();
+                    } else {
+                        CUtilitarios.msg_adver("No se pudo eliminar el producto", "Eliminar");
+                    }
+                } catch (Exception e) {
+                    CUtilitarios.msg_error("Error al eliminar: " + e.getMessage(), "Eliminar");
                 }
-            } catch (Exception e) {
-                CUtilitarios.msg_error("Error al eliminar: " + e.getMessage(), "Eliminar");
+            } else {
+                CUtilitarios.msg_adver("Seleccione una fila para eliminar", "Eliminar");
             }
         } else {
-            CUtilitarios.msg_adver("Seleccione una fila para eliminar", "Eliminar");
+            CUtilitarios.msg_adver("Tabla vacía", "Eliminar dato");
         }
-    } else {
-        CUtilitarios.msg_adver("Tabla vacía", "Eliminar dato");
+
+        limpiar_campos();
     }
-
-    limpiar_campos();
-}
-
-    
-    
 
     public GestionProductos() {
         initComponents();
@@ -682,7 +673,7 @@ public class GestionProductos extends javax.swing.JFrame {
     }//GEN-LAST:event_jTFNombreActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
- elimina_dato();        // TODO add your handling code here:
+        elimina_dato();        // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -717,7 +708,7 @@ public class GestionProductos extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jTProductoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTProductoMouseClicked
- lee_fila_seleccionada();        // TODO add your handling code here:
+        lee_fila_seleccionada();        // TODO add your handling code here:
     }//GEN-LAST:event_jTProductoMouseClicked
 
     private void jCBTiposActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBTiposActionPerformed
