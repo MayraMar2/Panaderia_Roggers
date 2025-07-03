@@ -79,4 +79,37 @@ public class CComboBox {
             CUtilitarios.msg_error("Error al mostrar", "Combo Box");
         }
     }
+    
+    public void mostrarTipo(JComboBox combo) {
+        String consulta = "";
+        consulta = "select tipoproducto.tipo from tipoproducto";
+        Statement st;
+        Connection conn;
+        try {
+            st = objConexion.conectar().createStatement();
+            ResultSet rs = st.executeQuery(consulta);
+            combo.removeAllItems();
+            while (rs.next()) {
+                combo.addItem(rs.getString("tipo"));
+            }
+        } catch (Exception e) {
+            CUtilitarios.msg_error("Error al mostrar", "Combo Box");
+        }
+    }
+    
+    public void mostrarIDTipo(JComboBox combo, JTextField id) {
+        String consulta = "select idTipoProducto from tipoproducto where tipoproducto.tipo = ?";
+        try {
+            CallableStatement cs = objConexion.conectar().prepareCall(consulta);
+            cs.setString(1, combo.getSelectedItem().toString());
+            ResultSet rs = cs.executeQuery();
+            if (rs.next()) {
+                id.setText(rs.getString("idTipoProducto"));
+            } else {
+                id.setText("");
+            }
+        } catch (Exception e) {
+            CUtilitarios.msg_error("Error al mostrar", "Combo Box");
+        }
+    }
 }

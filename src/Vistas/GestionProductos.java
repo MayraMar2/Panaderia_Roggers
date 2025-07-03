@@ -325,7 +325,9 @@ public class GestionProductos extends javax.swing.JFrame {
 
     public GestionProductos() {
         initComponents();
-        combo_box();
+        CComboBox objCombo = new CComboBox();
+        objCombo.mostrarTipo(jCBTipos);
+        jTFIDTipo.setVisible(false);
     }
 
     @SuppressWarnings("unchecked")
@@ -361,6 +363,7 @@ public class GestionProductos extends javax.swing.JFrame {
         jCBTipos = new javax.swing.JComboBox<>();
         jButton5 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
+        jTFIDTipo = new javax.swing.JTextField();
         jButton6 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
 
@@ -483,7 +486,11 @@ public class GestionProductos extends javax.swing.JFrame {
         });
         jScrollPane3.setViewportView(jTProducto);
 
-        jCBTipos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jCBTipos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCBTiposActionPerformed(evt);
+            }
+        });
 
         jButton5.setFont(new java.awt.Font("Rockwell", 0, 12)); // NOI18N
         jButton5.setForeground(new java.awt.Color(153, 51, 0));
@@ -533,10 +540,14 @@ public class GestionProductos extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addGap(363, 363, 363)
                                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jButton3)
-                                    .addComponent(jButton1))
+                                    .addGroup(jPanel4Layout.createSequentialGroup()
+                                        .addGap(363, 363, 363)
+                                        .addComponent(jButton3))
+                                    .addGroup(jPanel4Layout.createSequentialGroup()
+                                        .addComponent(jTFIDTipo, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jButton1)))
                                 .addGap(7, 7, 7))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(jPanel4Layout.createSequentialGroup()
@@ -584,7 +595,9 @@ public class GestionProductos extends javax.swing.JFrame {
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addGap(24, 24, 24)
-                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jTFIDTipo, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -624,7 +637,7 @@ public class GestionProductos extends javax.swing.JFrame {
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(42, Short.MAX_VALUE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
         jLabel2.setFont(new java.awt.Font("Rockwell", 1, 36)); // NOI18N
@@ -707,6 +720,11 @@ public class GestionProductos extends javax.swing.JFrame {
  lee_fila_seleccionada();        // TODO add your handling code here:
     }//GEN-LAST:event_jTProductoMouseClicked
 
+    private void jCBTiposActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBTiposActionPerformed
+        CComboBox objCombo = new CComboBox();
+        objCombo.mostrarIDTipo(jCBTipos, jTFIDTipo);
+    }//GEN-LAST:event_jCBTiposActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -769,6 +787,7 @@ public class GestionProductos extends javax.swing.JFrame {
     private javax.swing.JTextField jTFCaducidad;
     private javax.swing.JTextField jTFCantidad;
     private javax.swing.JTextField jTFElaboracion;
+    private javax.swing.JTextField jTFIDTipo;
     private javax.swing.JTextField jTFNombre;
     private javax.swing.JTextField jTFPrecio;
     private javax.swing.JTable jTProducto;
