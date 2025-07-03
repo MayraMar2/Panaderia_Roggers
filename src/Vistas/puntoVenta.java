@@ -30,9 +30,9 @@ public class puntoVenta extends javax.swing.JFrame {
         jLSubtotal.setText("0");
         jLTotal.setText("0");
     }
-    
+
     CModelos modelos = new CModelos();
-    
+
     private void limpiar_campos_venta() {
         jTFCantidad.setText("");
         jTFDescuento.setText("");
@@ -114,6 +114,22 @@ public class puntoVenta extends javax.swing.JFrame {
             recalcularTotales();
         } catch (Exception e) {
             CUtilitarios.msg_error("Error al agregar producto: " + e.getMessage(), "Agregar Productos Venta");
+        }
+    }
+
+    private void mostrarResumenVenta(ArrayList<String[]> venta) {
+        if (!venta.isEmpty()) {
+            StringBuilder resumen = new StringBuilder();
+            for (String[] fila : venta) {
+                resumen.append("Producto: ").append(fila[2])
+                        .append(" | Cantidad: ").append(fila[3])
+                        .append(" | Precio: $").append(fila[4])
+                        .append(" | Subtotal: $").append(fila[5])
+                        .append("\n");
+            }
+            resumen.append("TOTAL: $").append(venta.get(0)[6]);
+
+            JOptionPane.showMessageDialog(this, resumen.toString(), "Venta realizada", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -201,12 +217,25 @@ public class puntoVenta extends javax.swing.JFrame {
                 conn.commit();
                 conn.close();
 
-                CUtilitarios.msg("Venta registrada correctamente", "Venta");
+                ArrayList<String[]> ventaReciente = modelos.obtenerVentaPorID(idVentaGenerada);
+                mostrarResumenVenta(ventaReciente);
 
-                limpiar_campos_venta(); // <- debes implementar este método
+                limpiar_campos_venta(); 
             }
         } catch (Exception e) {
             CUtilitarios.msg_error("Error al registrar venta:\n" + e.getMessage(), "Venta");
+        }
+    }
+
+    private void quitar_producto() {
+        DefaultTableModel model = (DefaultTableModel) jTVenta.getModel();
+        int filaSeleccionada = jTVenta.getSelectedRow();
+
+        if (filaSeleccionada >= 0) {
+            model.removeRow(filaSeleccionada);
+            recalcularTotales();
+        } else {
+            CUtilitarios.msg_adver("Selecciona un producto para quitar", "Quitar producto");
         }
     }
 
@@ -311,7 +340,7 @@ public class puntoVenta extends javax.swing.JFrame {
         });
 
         jLabel8.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
-        jLabel8.setText("Clientes frecuentes:");
+        jLabel8.setText("Elegir cliente:");
 
         jTFIDClientes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -339,6 +368,11 @@ public class puntoVenta extends javax.swing.JFrame {
 
         jBQuitarProducto.setForeground(new java.awt.Color(153, 51, 0));
         jBQuitarProducto.setText("Quitar Producto");
+        jBQuitarProducto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBQuitarProductoActionPerformed(evt);
+            }
+        });
 
         jLabel5.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
         jLabel5.setText("Descuento:");
@@ -416,15 +450,7 @@ public class puntoVenta extends javax.swing.JFrame {
                         .addGap(29, 29, 29)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jTFIDProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jLabel9)
-                                .addGap(18, 18, 18)
-                                .addComponent(jCBProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jTFIDClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jCBClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -440,10 +466,18 @@ public class puntoVenta extends javax.swing.JFrame {
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addComponent(jBAgregarProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jBQuitarProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jScrollPane4)
+                                .addComponent(jBQuitarProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel9))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jCBProductos, 0, 259, Short.MAX_VALUE)
+                                    .addComponent(jCBClientes, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 499, Short.MAX_VALUE)
                             .addComponent(jBGenerarVenta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jBVerVentas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addGap(32, 32, 32))
@@ -495,9 +529,9 @@ public class puntoVenta extends javax.swing.JFrame {
                     .addComponent(jLabel7)
                     .addComponent(jLTotal)
                     .addComponent(jBVerVentas))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE)
+                .addGap(30, 30, 30)
                 .addComponent(jButton3)
-                .addGap(36, 36, 36))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         jPanel3Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jTFIDClientes, jTFIDProductos});
@@ -515,7 +549,7 @@ public class puntoVenta extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(37, Short.MAX_VALUE))
+                .addGap(0, 20, Short.MAX_VALUE))
         );
 
         jLabel2.setFont(new java.awt.Font("Rockwell", 1, 36)); // NOI18N
@@ -550,7 +584,7 @@ public class puntoVenta extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 539, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -615,13 +649,13 @@ public class puntoVenta extends javax.swing.JFrame {
                     CUtilitarios.msg("No se encontraron ventas", "Generación de PDF");
                 } else {
                     for (String[] fila : transferencias) {
-                        tabla.addCell(fila[0]); 
-                        tabla.addCell(fila[1]); 
-                        tabla.addCell(fila[2]); 
-                        tabla.addCell(fila[3]); 
-                        tabla.addCell(fila[4]); 
-                        tabla.addCell(fila[5]); 
-                        tabla.addCell(fila[6]); 
+                        tabla.addCell(fila[0]);
+                        tabla.addCell(fila[1]);
+                        tabla.addCell(fila[2]);
+                        tabla.addCell(fila[3]);
+                        tabla.addCell(fila[4]);
+                        tabla.addCell(fila[5]);
+                        tabla.addCell(fila[6]);
                     }
                     doc.add(tabla);
                 }
@@ -635,6 +669,10 @@ public class puntoVenta extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Error al generar el PDF: " + e.getMessage());
         }
     }//GEN-LAST:event_jBVerVentasActionPerformed
+
+    private void jBQuitarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBQuitarProductoActionPerformed
+        quitar_producto();
+    }//GEN-LAST:event_jBQuitarProductoActionPerformed
 
     /**
      * @param args the command line arguments
